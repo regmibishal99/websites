@@ -1,11 +1,921 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>Portfolio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bishal Regmi — Software Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e1a;
+      --bg-card: #111827;
+      --bg-card2: #1a2235;
+      --accent: #6366f1;
+      --accent2: #22d3ee;
+      --accent3: #a78bfa;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --border: rgba(255,255,255,0.07);
+      --border-accent: rgba(99,102,241,0.4);
+      --radius: 12px;
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(10,14,26,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.875rem;
+      font-weight: 500; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 6rem 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-glow {
+      position: absolute; top: 20%; left: 50%; transform: translate(-50%,-50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; max-width: 760px;
+    }
+    .hero-avatar-wrap {
+      width: 120px; height: 120px; border-radius: 50%;
+      border: 3px solid var(--accent);
+      overflow: hidden; margin-bottom: 1.75rem;
+      box-shadow: 0 0 0 6px rgba(99,102,241,0.15);
+      background: var(--bg-card2);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; cursor: pointer;
+    }
+    .hero-avatar-wrap img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .avatar-placeholder {
+      font-size: 2.5rem; font-weight: 700; color: var(--accent);
+      letter-spacing: -1px;
+    }
+    .avatar-upload-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.65);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; opacity: 0; transition: opacity 0.2s;
+      border-radius: 50%;
+    }
+    .hero-avatar-wrap:hover .avatar-upload-overlay { opacity: 1; }
+    .avatar-upload-overlay svg { width: 28px; height: 28px; color: #fff; margin-bottom: 4px; }
+    .avatar-upload-overlay span { font-size: 0.7rem; color: #fff; font-weight: 500; }
+    #avatarInput { display: none; }
+
+    .hero-eyebrow {
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+    h1 .accent-grad {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 1.1rem; color: var(--text-muted); max-width: 540px;
+      margin-bottom: 2.5rem; line-height: 1.75;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.75rem; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; transition: all 0.2s; border: none;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+    }
+    .btn-primary:hover { background: #5558e8; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border-accent);
+    }
+    .btn-outline:hover { background: rgba(99,102,241,0.1); transform: translateY(-1px); }
+
+    /* ── Upload CV Banner ── */
+    #upload-section {
+      max-width: 860px; margin: 0 auto 1rem; padding: 0 2rem;
+    }
+    .upload-card {
+      background: var(--bg-card); border: 1px dashed rgba(99,102,241,0.35);
+      border-radius: var(--radius); padding: 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1.5rem; flex-wrap: wrap;
+    }
+    .upload-card-info h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .upload-card-info p { font-size: 0.85rem; color: var(--text-muted); }
+    .upload-label {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.65rem 1.5rem; background: var(--accent); color: #fff;
+      border-radius: 8px; font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .upload-label:hover { background: #5558e8; }
+    #cvInput { display: none; }
+    #cv-file-list { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .cv-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.35rem 0.85rem; background: rgba(99,102,241,0.15);
+      border: 1px solid var(--border-accent); border-radius: 20px;
+      font-size: 0.8rem; color: var(--text); cursor: pointer;
+    }
+    .cv-chip:hover { background: rgba(99,102,241,0.25); }
+    .cv-chip .remove-cv { color: var(--text-dim); font-size: 0.95rem; line-height: 1; }
+
+    /* ── Sections ── */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.75rem;
+    }
+    .section-line {
+      width: 40px; height: 3px; background: var(--accent);
+      border-radius: 2px; margin-bottom: 3rem;
+    }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; align-items: start;
+    }
+    .about-text p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.8; margin-bottom: 1rem; }
+    .about-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+      text-align: center;
+    }
+    .stat-num { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .skill-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-card:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+    .skill-card-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; margin-bottom: 1rem;
+    }
+    .icon-purple { background: rgba(99,102,241,0.15); }
+    .icon-cyan   { background: rgba(34,211,238,0.15); }
+    .icon-violet { background: rgba(167,139,250,0.15); }
+    .icon-green  { background: rgba(34,197,94,0.12); }
+    .skill-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag {
+      font-size: 0.75rem; font-family: var(--mono);
+      padding: 0.25rem 0.6rem; border-radius: 4px;
+      background: rgba(255,255,255,0.05); color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Projects ── */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .project-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+    .project-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.7rem; font-family: var(--mono); font-weight: 500;
+      padding: 0.2rem 0.55rem; border-radius: 4px;
+      background: rgba(99,102,241,0.15); color: #a5b4fc;
+      border: 1px solid rgba(99,102,241,0.25); margin-bottom: 1rem;
+      align-self: flex-start;
+    }
+    .project-card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .project-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.65; flex: 1; }
+    .project-footer {
+      display: flex; justify-content: flex-end; margin-top: 1.25rem;
+    }
+    .project-link {
+      font-size: 0.8rem; font-weight: 600; color: var(--accent2);
+      text-decoration: none; display: flex; align-items: center; gap: 0.3rem;
+    }
+    .project-link:hover { text-decoration: underline; }
+
+    /* ── Experience ── */
+    .experience-list { display: flex; flex-direction: column; gap: 1.25rem; }
+    .exp-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius); padding: 1.5rem;
+    }
+    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; }
+    .exp-role { font-size: 1rem; font-weight: 600; }
+    .exp-date { font-size: 0.8rem; color: var(--accent2); font-family: var(--mono); font-weight: 500; }
+    .exp-org { font-size: 0.875rem; color: var(--text-muted); margin: 0.25rem 0 0.75rem; }
+    .exp-bullets { list-style: none; }
+    .exp-bullets li {
+      font-size: 0.875rem; color: var(--text-muted); padding: 0.2rem 0;
+      padding-left: 1rem; position: relative;
+    }
+    .exp-bullets li::before {
+      content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 0.7rem;
+    }
+
+    /* ── CV Download ── */
+    .cv-roles-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .cv-role-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: border-color 0.2s;
+    }
+    .cv-role-card:hover { border-color: var(--border-accent); }
+    .cv-role-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .cv-role-info p { font-size: 0.78rem; color: var(--text-muted); }
+    .btn-dl {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; font-weight: 600; padding: 0.45rem 1rem;
+      border-radius: 6px; background: rgba(99,102,241,0.15);
+      color: var(--accent); border: 1px solid var(--border-accent);
+      cursor: pointer; text-decoration: none; white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .btn-dl:hover { background: rgba(99,102,241,0.3); }
+
+    /* ── Contact ── */
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 0.9rem; color: var(--text-muted);
+    }
+    .contact-item a { color: var(--text-muted); text-decoration: none; }
+    .contact-item a:hover { color: var(--accent2); }
+    .contact-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: rgba(99,102,241,0.12); border: 1px solid var(--border-accent);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-form input, .contact-form textarea {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.75rem 1rem; color: var(--text);
+      font-family: var(--font); font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s; resize: none;
+    }
+    .contact-form input:focus, .contact-form textarea:focus {
+      border-color: var(--border-accent);
+    }
+    .contact-form textarea { min-height: 110px; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 2.5rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim); font-size: 0.825rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: 0.8rem; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-btns { flex-direction: column; align-items: center; }
+      section { padding: 3.5rem 1.25rem; }
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.6s ease both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.45s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up, * { animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
 <body>
-    
+
+<!-- ── Navigation ── -->
+<nav>
+  <span class="nav-logo">BR</span>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#cv">CV</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── Hero ── -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-avatar-wrap fade-up" id="avatarWrap" title="Click to upload photo">
+      <img id="avatarImg" src="" alt="Bishal Regmi" style="display:none;" />
+      <span class="avatar-placeholder" id="avatarPlaceholder">BR</span>
+      <div class="avatar-upload-overlay">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+        </svg>
+        <span>Upload photo</span>
+      </div>
+    </div>
+    <input type="file" id="avatarInput" accept="image/*" />
+
+    <p class="hero-eyebrow fade-up delay-1">Software Engineering Student · Nepal</p>
+    <h1 class="fade-up delay-2">Bishal <span class="accent-grad">Regmi</span></h1>
+    <p class="hero-desc fade-up delay-3">
+      Flutter developer, frontend engineer &amp; aspiring IT professional. 
+      Building cross-platform apps with clean UI/UX — and ready to contribute from day one.
+    </p>
+    <div class="hero-btns fade-up delay-4">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#cv" class="btn btn-outline">Download CV</a>
+      <a href="https://github.com/regmibishal99" target="_blank" class="btn btn-outline">GitHub ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Upload CV ── -->
+<div id="upload-section">
+  <div class="upload-card">
+    <div class="upload-card-info">
+      <h3>Upload your latest CV</h3>
+      <p>Keep your portfolio current — upload a PDF and it will be available for download.</p>
+      <div id="cv-file-list"></div>
+    </div>
+    <label for="cvInput" class="upload-label">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+      </svg>
+      Upload CV (PDF)
+    </label>
+    <input type="file" id="cvInput" accept=".pdf" multiple />
+  </div>
+</div>
+
+<!-- ── About ── -->
+<section id="about">
+  <div class="container">
+    <p class="section-label">Who I am</p>
+    <h2 class="section-title">About Me</h2>
+    <div class="section-line"></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm a final-year Bachelor of Software Engineering student at NCIT (Nepal College of Information Technology), 
+          Lalitpur — affiliated with Pokhara University. My main focus is Flutter mobile development, 
+          where I've built everything from budget trackers to food delivery apps.
+        </p>
+        <p>
+          I'm fluent in Dart, comfortable with JavaScript and React.js on the frontend, 
+          and have hands-on experience with Firebase, REST APIs, and Git workflows. 
+          Beyond code, I've also served as a Flutter Mentor at our college hackathon, 
+          guiding teams through real technical challenges under pressure.
+        </p>
+        <p>
+          I'm immediately available and based in Sanothimi, Bhaktapur — easily commutable to Kathmandu.
+        </p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-num">5+</div>
+          <div class="stat-label">Flutter Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">4th</div>
+          <div class="stat-label">Year of BSE</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">2</div>
+          <div class="stat-label">Languages (EN/NP)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Ready to learn</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Skills ── -->
+<section id="skills" style="background: var(--bg-card);">
+  <div class="container">
+    <p class="section-label">What I know</p>
+    <h2 class="section-title">Technical Skills</h2>
+    <div class="section-line"></div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-card-icon icon-purple">📱</div>
+        <h4>Mobile Development</h4>
+        <div class="skill-tags">
+          <span class="tag">Flutter</span><span class="tag">Dart</span>
+          <span class="tag">Provider</span><span class="tag">GetX</span>
+          <span class="tag">Hive</span><span class="tag">Android Studio</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon icon-cyan">🌐</div>
+        <h4>Web Frontend</h4>
+        <div class="skill-tags">
+          <span class="tag">HTML5</span><span class="tag">CSS3</span>
+          <span class="tag">JavaScript ES6+</span><span class="tag">React.js</span>
+          <span class="tag">Figma-to-code</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon icon-violet">⚙️</div>
+        <h4>Backend &amp; Databases</h4>
+        <div class="skill-tags">
+          <span class="tag">Firebase</span><span class="tag">REST APIs</span>
+          <span class="tag">MySQL</span><span class="tag">Postman</span>
+          <span class="tag">SQL</span><span class="tag">Node.js basics</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon icon-green">🖥️</div>
+        <h4>DevOps &amp; OS</h4>
+        <div class="skill-tags">
+          <span class="tag">Git/GitHub</span><span class="tag">Linux</span>
+          <span class="tag">Windows</span><span class="tag">VS Code</span>
+          <span class="tag">AWS basics</span><span class="tag">TCP/IP</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon icon-purple">🔍</div>
+        <h4>QA &amp; Testing</h4>
+        <div class="skill-tags">
+          <span class="tag">Manual Testing</span><span class="tag">Postman</span>
+          <span class="tag">STLC</span><span class="tag">Bug Reporting</span>
+          <span class="tag">Chrome DevTools</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon icon-cyan">🧠</div>
+        <h4>Soft Skills</h4>
+        <div class="skill-tags">
+          <span class="tag">Problem Solving</span><span class="tag">Mentorship</span>
+          <span class="tag">Team Collaboration</span><span class="tag">Communication</span>
+          <span class="tag">Report Writing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Projects ── -->
+<section id="projects">
+  <div class="container">
+    <p class="section-label">What I've built</p>
+    <h2 class="section-title">Projects</h2>
+    <div class="section-line"></div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <span class="project-badge">Flutter · Dart · Hive</span>
+        <h4>Personal Budget Tracker</h4>
+        <p>Fully offline budget tracker with monthly income/expense tracking, interactive pie chart visualization, and a monthly salary target — no internet required.</p>
+        <div class="project-footer">
+          <a href="https://github.com/regmibishal99" target="_blank" class="project-link">View on GitHub →</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <span class="project-badge">Flutter · Firebase · Provider</span>
+        <h4>Foodie — Food Delivery App</h4>
+        <p>Complete food delivery app with user authentication, cart management, real-time price calculation, and dynamic UI with gradient themes and bottom navigation.</p>
+        <div class="project-footer">
+          <a href="https://github.com/regmibishal99" target="_blank" class="project-link">View on GitHub →</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <span class="project-badge">Flutter · Dart</span>
+        <h4>Clear-Exam Learning Platform</h4>
+        <p>Comprehensive learning platform covering Loksewa and engineering entrance exams, with reusable custom widgets, cards, forms, and smooth animations.</p>
+        <div class="project-footer">
+          <a href="https://github.com/regmibishal99" target="_blank" class="project-link">View on GitHub →</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <span class="project-badge">Flutter · Camera API · Dart</span>
+        <h4>WhatsApp-Style Chat UI</h4>
+        <p>Pixel-perfect WhatsApp-style chat UI with full contact list, message bubbles, Hero animations, dark mode, and camera integration — zero backend needed.</p>
+        <div class="project-footer">
+          <a href="https://github.com/regmibishal99" target="_blank" class="project-link">View on GitHub →</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <span class="project-badge">Flutter · QR · Camera API</span>
+        <h4>QR Code Scanner &amp; Generator</h4>
+        <p>Dual-feature app for scanning QR codes via camera and generating QR codes from text. Includes permission handling and the qr_flutter package.</p>
+        <div class="project-footer">
+          <a href="https://github.com/regmibishal99" target="_blank" class="project-link">View on GitHub →</a>
+        </div>
+      </div>
+      <div class="project-card">
+        <span class="project-badge">React.js · Node.js · CSS</span>
+        <h4>Resume Ranking System</h4>
+        <p>Full-stack screening web app built with React.js dashboard. Integrated frontend with Node.js APIs for real-time data. Led manual testing phase with detailed bug reports.</p>
+        <div class="project-footer">
+          <a href="https://github.com/regmibishal99" target="_blank" class="project-link">View on GitHub →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Experience ── -->
+<section id="experience" style="background: var(--bg-card);">
+  <div class="container">
+    <p class="section-label">What I've done</p>
+    <h2 class="section-title">Experience &amp; Education</h2>
+    <div class="section-line"></div>
+    <div class="experience-list">
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-role">Flutter Mentor</span>
+          <span class="exp-date">2023 – 2024</span>
+        </div>
+        <p class="exp-org">College Hackathon — NCIT, Lalitpur</p>
+        <ul class="exp-bullets">
+          <li>Guided multiple student teams through Flutter development under tight time pressure</li>
+          <li>Explained cross-platform concepts, Provider/GetX state management, and widget architecture</li>
+          <li>Demonstrated patience and clear communication when explaining complex topics to beginners</li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-role">Bachelor of Software Engineering (Final Year)</span>
+          <span class="exp-date">2022 – Present</span>
+        </div>
+        <p class="exp-org">NCIT — Nepal College of Information Technology, Lalitpur · Pokhara University</p>
+        <ul class="exp-bullets">
+          <li>Coursework: Operating Systems, Computer Networks, DBMS, Data Structures, Mobile App Dev, Software Engineering</li>
+          <li>Built and deployed multiple full-stack and mobile applications as part of coursework and personal projects</li>
+          <li>Expected graduation: 2026</li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-role">+2 Science</span>
+          <span class="exp-date">2020 – 2022</span>
+        </div>
+        <p class="exp-org">Bridgewater International College</p>
+        <ul class="exp-bullets">
+          <li>Completed higher secondary education with a science focus</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CV Download ── -->
+<section id="cv">
+  <div class="container">
+    <p class="section-label">Download</p>
+    <h2 class="section-title">My CVs</h2>
+    <div class="section-line"></div>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:2rem;">
+      I've tailored my CV for different roles. Pick the one that matches your opening.
+    </p>
+    <div class="cv-roles-grid" id="cvRolesGrid">
+      <div class="cv-role-card">
+        <div class="cv-role-info">
+          <h4>Flutter / Mobile Developer</h4>
+          <p>Flutter projects, Dart, Firebase</p>
+        </div>
+        <a href="#" class="btn-dl" data-cv="flutter">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+          Download
+        </a>
+      </div>
+      <div class="cv-role-card">
+        <div class="cv-role-info">
+          <h4>Frontend Developer</h4>
+          <p>React.js, HTML/CSS/JS, UI/UX</p>
+        </div>
+        <a href="#" class="btn-dl" data-cv="frontend">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+          Download
+        </a>
+      </div>
+      <div class="cv-role-card">
+        <div class="cv-role-info">
+          <h4>IT Officer</h4>
+          <p>Networks, OS, IT Support, DBMS</p>
+        </div>
+        <a href="#" class="btn-dl" data-cv="it">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+          Download
+        </a>
+      </div>
+      <div class="cv-role-card">
+        <div class="cv-role-info">
+          <h4>QA Engineer</h4>
+          <p>STLC, Manual Testing, Postman</p>
+        </div>
+        <a href="#" class="btn-dl" data-cv="qa">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+          Download
+        </a>
+      </div>
+      <div class="cv-role-card">
+        <div class="cv-role-info">
+          <h4>CS Educator / Teacher</h4>
+          <p>Mentorship, CS concepts, PBL</p>
+        </div>
+        <a href="#" class="btn-dl" data-cv="teacher">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+          Download
+        </a>
+      </div>
+      <div class="cv-role-card">
+        <div class="cv-role-info">
+          <h4>Customer Support (ISP)</h4>
+          <p>Networking, Empathy, Communication</p>
+        </div>
+        <a href="#" class="btn-dl" data-cv="csr">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+          Download
+        </a>
+      </div>
+    </div>
+    <p style="color:var(--text-dim); font-size:0.8rem; margin-top:1.25rem;">
+      💡 Tip: Upload your latest PDF above and it will replace the relevant card with a live download link.
+    </p>
+  </div>
+</section>
+
+<!-- ── Contact ── -->
+<section id="contact" style="background: var(--bg-card);">
+  <div class="container">
+    <p class="section-label">Get in touch</p>
+    <h2 class="section-title">Contact</h2>
+    <div class="section-line"></div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/></svg>
+          </div>
+          <a href="tel:+9779847592498">+977 9847592498</a>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+          </div>
+          <a href="mailto:bishalregmi0123@gmail.com">bishalregmi0123@gmail.com</a>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+          </div>
+          Sanothimi, Bhaktapur (commutable to Kathmandu)
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+          </div>
+          <a href="https://github.com/regmibishal99" target="_blank">github.com/regmibishal99</a>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+          </div>
+          <a href="https://linkedin.com/in/bishalregmi" target="_blank">linkedin.com/in/bishalregmi</a>
+        </div>
+      </div>
+      <div class="contact-form">
+        <input type="text" placeholder="Your name" id="contactName" />
+        <input type="email" placeholder="your@email.com" id="contactEmail" />
+        <textarea placeholder="Your message…" id="contactMessage"></textarea>
+        <button class="btn btn-primary" onclick="handleContactSend()">Send message</button>
+        <p id="contactStatus" style="font-size:0.8rem; color:var(--accent2); display:none;"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>© 2025 Bishal Regmi · <a href="https://bishalregmi012.com.np" style="color:var(--accent2); text-decoration:none;">bishalregmi012.com.np</a></p>
+</footer>
+
+<script>
+  /* ── Avatar upload ── */
+  const avatarWrap = document.getElementById('avatarWrap');
+  const avatarInput = document.getElementById('avatarInput');
+  const avatarImg = document.getElementById('avatarImg');
+  const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+
+  avatarWrap.addEventListener('click', () => avatarInput.click());
+  avatarInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      avatarImg.src = ev.target.result;
+      avatarImg.style.display = 'block';
+      avatarPlaceholder.style.display = 'none';
+      localStorage.setItem('br_avatar', ev.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  /* Restore avatar from localStorage */
+  const savedAvatar = localStorage.getItem('br_avatar');
+  if (savedAvatar) {
+    avatarImg.src = savedAvatar;
+    avatarImg.style.display = 'block';
+    avatarPlaceholder.style.display = 'none';
+  }
+
+  /* ── CV upload ── */
+  const cvInput = document.getElementById('cvInput');
+  const cvFileList = document.getElementById('cv-file-list');
+  const cvFiles = {};
+
+  cvInput.addEventListener('change', e => {
+    Array.from(e.target.files).forEach(file => {
+      const id = 'cv_' + Date.now() + Math.random().toString(36).slice(2);
+      const reader = new FileReader();
+      reader.onload = ev => {
+        cvFiles[id] = { name: file.name, data: ev.target.result };
+        renderCvChip(id, file.name);
+        linkCvToRole(id, file.name);
+      };
+      reader.readAsDataURL(file);
+    });
+    cvInput.value = '';
+  });
+
+  function renderCvChip(id, name) {
+    const chip = document.createElement('span');
+    chip.className = 'cv-chip';
+    chip.dataset.id = id;
+    chip.innerHTML = `📄 ${name} <span class="remove-cv" title="Remove">×</span>`;
+    chip.querySelector('.remove-cv').addEventListener('click', ev => {
+      ev.stopPropagation();
+      chip.remove();
+      delete cvFiles[id];
+    });
+    chip.addEventListener('click', () => downloadCvBlob(cvFiles[id]));
+    cvFileList.appendChild(chip);
+  }
+
+  function linkCvToRole(id, name) {
+    const lower = name.toLowerCase();
+    let key = null;
+    if (lower.includes('flutter') || lower.includes('latest') || lower.includes('cv.pdf')) key = 'flutter';
+    else if (lower.includes('frontend') || lower.includes('front')) key = 'frontend';
+    else if (lower.includes('it_officer') || lower.includes('it officer')) key = 'it';
+    else if (lower.includes('qa')) key = 'qa';
+    else if (lower.includes('teacher') || lower.includes('t.pdf')) key = 'teacher';
+    else if (lower.includes('csr') || lower.includes('isp')) key = 'csr';
+    if (!key) return;
+    const btn = document.querySelector(`[data-cv="${key}"]`);
+    if (!btn) return;
+    btn.addEventListener('click', ev => {
+      ev.preventDefault();
+      downloadCvBlob(cvFiles[id]);
+    });
+    btn.style.background = 'rgba(34,211,238,0.15)';
+    btn.style.color = 'var(--accent2)';
+    btn.style.borderColor = 'rgba(34,211,238,0.35)';
+  }
+
+  function downloadCvBlob(file) {
+    if (!file) return;
+    const a = document.createElement('a');
+    a.href = file.data;
+    a.download = file.name;
+    a.click();
+  }
+
+  /* ── Contact form ── */
+  function handleContactSend() {
+    const name = document.getElementById('contactName').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
+    const msg = document.getElementById('contactMessage').value.trim();
+    const status = document.getElementById('contactStatus');
+    if (!name || !email || !msg) {
+      status.textContent = 'Please fill in all fields.';
+      status.style.color = '#f87171';
+      status.style.display = 'block';
+      return;
+    }
+    const mailto = `mailto:bishalregmi0123@gmail.com?subject=Portfolio inquiry from ${encodeURIComponent(name)}&body=${encodeURIComponent(msg + '\n\nFrom: ' + name + ' <' + email + '>')}`;
+    window.location.href = mailto;
+    status.textContent = '✓ Opening your email client…';
+    status.style.color = 'var(--accent2)';
+    status.style.display = 'block';
+  }
+
+  /* ── Intersection observer for fade-up on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.skill-card, .project-card, .exp-card, .cv-role-card, .stat-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
 </body>
 </html>
